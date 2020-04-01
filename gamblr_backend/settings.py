@@ -128,4 +128,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+SITE_ID=1
+
 django_heroku.settings(locals())
