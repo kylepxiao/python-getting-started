@@ -2,12 +2,11 @@ from django.contrib.auth.models import User, Group
 from django.core.files.storage import FileSystemStorage
 from rest_framework import viewsets
 from rest_framework import permissions
-from gamblr_backend.server.serializers import UserSerializer, GroupSerializer
+from gamblr_backend.server.serializers import UserSerializer, GroupSerializer, FileSerializer, JsonSerializer
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import FileSerializer
 from .opencv_card_detector.CardDetector import *
 from gamblr_backend.settings import *
 import cv2
@@ -35,7 +34,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 class FileUploadView(APIView):
-    parser_class = (FileUploadParser,)
 
     def post(self, request, *args, **kwargs):
 
@@ -44,7 +42,6 @@ class FileUploadView(APIView):
       if file_serializer.is_valid():
           file_serializer.save()
           
-          #image = cv2.imdecode(np.fromstring(request.FILES['file'].read(), np.uint8), cv2.IMREAD_UNCHANGED)
           file_obj = request.FILES['file']
           image = cv2.imread(os.path.join(MEDIA_ROOT, str(file_obj)), 1)
           results = get_classification(image)
@@ -58,13 +55,24 @@ class FileUploadView(APIView):
               }
               cards.append(values)
           response = {'cards': cards}
-          #fs = FileSystemStorage()
-          #filename = fs.save(file_obj.name, file_obj)
-          #uploaded_file_url = fs.url(filename)
 
-          #image = cv2.imread(uploaded_file_url, 1)
-
-          #return Response(file_serializer.data, status=status.HTTP_201_CREATED)
           return JsonResponse(response, status=status.HTTP_201_CREATED)
       else:
           return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class JSONUploadView(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+      json_serializer = JsonSerializer(data=request.data)
+
+      if json_serializer.is_valid():
+          json_serializer.save()
+
+          data = json.loads(request.data['json'])
+
+          response = {'move': 'hit'}
+
+          return JsonResponse(response, status=status.HTTP_201_CREATED)
+      else:
+          return Response(json_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

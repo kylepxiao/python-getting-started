@@ -16,7 +16,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('upload/', include('gamblr_backend.urls'))
+    path('upload/', include('gamblr_backend.urls')),
+    path('play/', include('gamblr_backend.urls'))
 ]
 
 if settings.DEBUG:
