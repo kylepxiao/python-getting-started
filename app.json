@@ -11,6 +11,11 @@
       "generator": "secret"
     }
   },
+  "buildpacks": [
+    {
+      "url": "https://github.com/hdachev/heroku-buildpack-opencv"
+    }
+  ],
   "environments": {
     "test": {
       "scripts": {
