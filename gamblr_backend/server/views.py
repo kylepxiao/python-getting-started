@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.core.files.storage import FileSystemStorage
 from rest_framework import viewsets
 from rest_framework import permissions
 from gamblr_backend.server.serializers import UserSerializer, GroupSerializer
@@ -7,6 +8,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import FileSerializer
+from .opencv_card_detector.CardDetector import *
+from gamblr_backend.settings import *
+import cv2
+import numpy as np
+import gamblr_backend.server.opencv_card_detector.Cards as Cards
+import json
+from django.http import JsonResponse
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -35,6 +43,28 @@ class FileUploadView(APIView):
 
       if file_serializer.is_valid():
           file_serializer.save()
-          return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+          
+          #image = cv2.imdecode(np.fromstring(request.FILES['file'].read(), np.uint8), cv2.IMREAD_UNCHANGED)
+          file_obj = request.FILES['file']
+          image = cv2.imread(os.path.join(MEDIA_ROOT, str(file_obj)), 1)
+          results = get_classification(image)
+          cards = []
+          for result in results:
+              values = {
+                  'best_rank_match': result.best_rank_match,
+                  'best_suit_match': result.best_suit_match,
+                  'rank_diff': result.rank_diff,
+                  'suit_diff': result.suit_diff
+              }
+              cards.append(values)
+          response = {'cards': cards}
+          #fs = FileSystemStorage()
+          #filename = fs.save(file_obj.name, file_obj)
+          #uploaded_file_url = fs.url(filename)
+
+          #image = cv2.imread(uploaded_file_url, 1)
+
+          #return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+          return JsonResponse(response, status=status.HTTP_201_CREATED)
       else:
           return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
