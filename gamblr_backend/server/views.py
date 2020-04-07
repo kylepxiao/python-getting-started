@@ -12,6 +12,7 @@ from gamblr_backend.settings import *
 import cv2
 import numpy as np
 import gamblr_backend.server.opencv_card_detector.Cards as Cards
+import gamblr_backend.server.strategy_agent.tabular as tabular
 import json
 from django.http import JsonResponse
 
@@ -71,8 +72,11 @@ class JSONUploadView(APIView):
 
           data = json.loads(request.data['json'])
 
-          response = {'move': 'hit'}
-
-          return JsonResponse(response, status=status.HTTP_201_CREATED)
+          if data['method'] == 'tabular':
+              move = tabular.get_action(data['dealer_upcard'], data['player_cards'])
+              response = {'move': move}
+              return JsonResponse(response, status=status.HTTP_201_CREATED)
+          else:
+              return Response(json_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
       else:
           return Response(json_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
