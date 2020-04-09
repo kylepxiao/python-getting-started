@@ -232,22 +232,22 @@ rank_to_value = {
 
 def is_soft(cards):
     if len(cards) == 2:
-        if cards[0]['rank'] != cards[1]['rank']:
-            if cards[0]['rank'] == 'Ace' or cards[1]['rank'] == 'Ace':
+        if cards[0]['best_rank_match'] != cards[1]['best_rank_match']:
+            if cards[0]['best_rank_match'] == 'Ace' or cards[1]['best_rank_match'] == 'Ace':
                 return True
     return False
 
 def tally_hard_total(cards):
-    return sum([rank_to_value[card['rank']] for card in cards])
+    return sum([rank_to_value[card['best_rank_match']] for card in cards])
 
 def tally_soft_total(cards):
-    if cards[0]['rank'] != 'Ace':
-        return 'A' + str(rank_to_value[cards[0]['rank']])
+    if cards[0]['best_rank_match'] != 'Ace':
+        return 'A' + str(rank_to_value[cards[0]['best_rank_match']])
     else:
-        return 'A' + str(rank_to_value[cards[1]['rank']])
+        return 'A' + str(rank_to_value[cards[1]['best_rank_match']])
 
 def get_action(upcard, cards):
-    dcard = str(rank_to_value[upcard['rank']]) if upcard['rank'] != 'Ace' else 'A'
+    dcard = str(rank_to_value[upcard['best_rank_match']]) if upcard['best_rank_match'] != 'Ace' else 'A'
     if is_soft(cards):
         return soft_table[dcard][tally_soft_total(cards)]
     else:
@@ -261,9 +261,9 @@ def get_action(upcard, cards):
 
 
 if __name__ == '__main__':
-    upcard = {'rank': 'Jack'}
+    upcard = {'best_rank_match': 'Jack'}
     cards = [
-        {'rank': 'Nine'},
-        {'rank': 'Queen'}
+        {'best_rank_match': 'Nine'},
+        {'best_rank_match': 'Queen'}
     ]
     print(get_action(upcard, cards))
