@@ -1,0 +1,63 @@
+Random strategy
+18.8633
+
+Tabular strategy
+1.1240999999999999
+
+Q-learning strategy
+0.05375
+
+Deck Size: 1
+
+Random strategy with Counting
+3.107541498800281
+
+Tabular strategy with Counting
+-0.7469823031272784
+
+Q-learning strategy with Counting
+-0.7099019199719802
+
+Deck Size: 2
+
+Random strategy with Counting
+3.7687318427340197
+
+Tabular strategy with Counting
+-0.12491190240249239
+
+Q-learning strategy with Counting
+-0.480341199810883
+
+Deck Size: 3
+
+Random strategy with Counting
+4.03051944831397
+
+Tabular strategy with Counting
+-0.11287204973264009
+
+Q-learning strategy with Counting
+-0.4729013986186459
+
+Deck Size: 4
+
+Random strategy with Counting
+4.284821928695539
+
+Tabular strategy with Counting
+0.12872472706610638
+
+Q-learning strategy with Counting
+-0.4032853865117852
+
+Deck Size: 5
+
+Random strategy with Counting
+4.4106522307301015
+
+Tabular strategy with Counting
+0.1318128713302112
+
+Q-learning strategy with Counting
+0.03180268310690036
