@@ -34,4 +34,4 @@ labels_train = np.array(labels_train)
 data_test = np.transpose(np.array(data_test))
 labels_test = np.array(labels_test)
 
-print(model(data_train, labels_train, data_test, labels_test, num_iterations=20000, learning_rate=0.001))
+print(model(data_train, labels_train, data_test, labels_test, num_iterations=10000, learning_rate=0.001))
