@@ -1,7 +1,5 @@
 ############## Playing Card Detector Functions ###############
 #
-# Author: Evan Juras
-# Date: 9/5/17
 # Description: Functions and classes for CardDetector.py that perform 
 # various steps of the card detection algorithm
 
@@ -15,7 +13,7 @@ import time
 
 # Adaptive threshold levels
 BKG_THRESH = 60
-CARD_THRESH = 30
+CARD_THRESH = 40
 
 # Width and height of card corner, where rank and suit are
 CORNER_WIDTH = 32
@@ -29,7 +27,7 @@ RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
 
-RANK_DIFF_MAX = 2000
+RANK_DIFF_MIN = 0.3
 SUIT_DIFF_MAX = 700
 
 CARD_MAX_AREA = 120000
@@ -242,9 +240,9 @@ def match_card(qCard, train_ranks, train_suits):
     the query card rank and suit images with the train rank and suit images.
     The best match is the rank or suit image that has the least difference."""
 
-    best_rank_match_diff = 10000
-    best_suit_match_diff = 10000
-    best_rank_match_name = "Unknown"
+    best_rank_match_diff = 0.2
+    best_suit_match_diff = 100000
+    best_rank_match_name = "Queen"
     best_suit_match_name = "Clubs"
     i = 0
 
@@ -258,9 +256,10 @@ def match_card(qCard, train_ranks, train_suits):
         for Trank in train_ranks:
 
                 diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
-                rank_diff = int(np.sum(diff_img)/255)
+                #rank_diff = int(np.sum(diff_img)/255)
+                rank_diff = cv2.matchTemplate(qCard.rank_img,Trank.img,cv2.TM_CCOEFF_NORMED)[0][0]
                 
-                if rank_diff < best_rank_match_diff:
+                if rank_diff > best_rank_match_diff:
                     best_rank_diff_img = diff_img
                     best_rank_match_diff = rank_diff
                     best_rank_name = Trank.name
@@ -279,11 +278,13 @@ def match_card(qCard, train_ranks, train_suits):
     # Combine best rank match and best suit match to get query card's identity.
     # If the best matches have too high of a difference value, card identity
     # is still Unknown
-    if (best_rank_match_diff < RANK_DIFF_MAX):
+    if (best_rank_match_diff > RANK_DIFF_MIN):
         best_rank_match_name = best_rank_name
 
     if (best_suit_match_diff < SUIT_DIFF_MAX):
         best_suit_match_name = best_suit_name
+
+    best_rank_match_diff = round(best_rank_match_diff * 1000)
 
     # Return the identiy of the card and the quality of the suit and rank match
     return best_rank_match_name, best_suit_match_name, best_rank_match_diff, best_suit_match_diff

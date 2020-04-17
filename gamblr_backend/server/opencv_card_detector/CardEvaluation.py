@@ -8,7 +8,7 @@ import imutils
 import VideoStream
 
 
-image_path = 'E:\Playing Card Detection\playing-cards-master\playing-cards-master\img'
+image_path = 'evaluation'
 
 ### ---- INITIALIZATION ---- ###
 # Define constants and initialize variables

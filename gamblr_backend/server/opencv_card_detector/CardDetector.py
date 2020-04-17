@@ -8,14 +8,12 @@ import imutils
 import gamblr_backend.server.opencv_card_detector.VideoStream as VideoStream
 
 
-image_path = 'E:\Playing Card Detection\playing-cards-master\playing-cards-master\img'
-
 ### ---- INITIALIZATION ---- ###
 # Define constants and initialize variables
 
 # Adaptive threshold levels
-#BKG_THRESH = 90
-BKG_THRESH = 50
+BKG_THRESH = 90
+#BKG_THRESH = 50
 CARD_THRESH = 10
 
 ## Camera settings
@@ -75,7 +73,7 @@ def get_classification(image):
     best_pre_proc = None
 
     # number of tries to detect cards
-    for tries in range(1):
+    for tries in range(9):
 
         # Pre-process camera image (gray, blur, and threshold it)
         pre_proc = Cards.preprocess_image(image, BKG_THRESH=BKG_THRESH - 10*tries)

@@ -73,9 +73,13 @@ class JSONUploadView(APIView):
           data = json.loads(request.data['json'])
 
           if data['method'] == 'tabular':
-              move = tabular.get_action(data['dealer_upcard'], data['player_cards'])
-              response = {'move': move}
-              return JsonResponse(response, status=status.HTTP_201_CREATED)
+              try:
+                move = tabular.get_action(data['dealer_upcard'], data['player_cards'])
+                response = {'move': move}
+                return JsonResponse(response, status=status.HTTP_201_CREATED)
+              except:
+                response = {'move': "Insufficient or Incorrectly Formatted Data"}
+                return JsonResponse(response, status=status.HTTP_201_CREATED)
           else:
               return Response(json_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
       else:
